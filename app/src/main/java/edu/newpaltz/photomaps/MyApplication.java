@@ -2,9 +2,6 @@ package edu.newpaltz.photomaps;
 
 import android.app.Application;
 
-/**
- * Created by yaface on 5/15/15.
- */
 public class MyApplication extends Application {
 
     public static String mJpg;

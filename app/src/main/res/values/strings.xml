@@ -7,6 +7,10 @@
     <string name="take_photo">Take Photo</string>
     <string name="view_photos">View Photos</string>
     <string name="upload_photos">Upload Photos</string>
-
+    <string name="title_activity_save_photo">SavePhoto</string>
+    <string name="comment">Comment:</string>
+    <string name="thumbnail">Image Thumbnail</string>
+    <string name="save">Save Photo</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

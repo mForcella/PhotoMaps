@@ -2,6 +2,7 @@ package edu.newpaltz.photomaps;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -10,14 +11,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 public class MainMenu extends Activity {
+
+    ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,7 @@ public class MainMenu extends Activity {
         Button takePhoto = (Button)findViewById(R.id.take_photo);
         Button viewPhotos = (Button)findViewById(R.id.view_photos);
         Button uploadPhotos = (Button)findViewById(R.id.upload_photos);
+        mImageView = (ImageView)findViewById(R.id.thumbnail);
         takePhoto.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // start camera activity
@@ -76,9 +80,15 @@ public class MainMenu extends Activity {
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // image saved successfully; return to previous screen
         Intent mI = new Intent(this.getApplication(), SavePhoto.class);
         mI.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        // add thumbnail extra
+        if (requestCode == MyApplication.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            mI.putExtra("thumb", imageBitmap);
+        }
+        // image saved successfully; return to previous screen
         startActivity(mI);
     }
 
