@@ -3,6 +3,7 @@ package edu.newpaltz.photomaps;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -53,25 +54,17 @@ public class MainMenu extends Activity {
         viewPhotos.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // go to main screen with newly created outing
-                Intent i = new Intent(this, ViewPhotos.class);
-                startActivity(i);
+                //Intent i = new Intent(this, ViewPhotos.class);
+                //startActivity(i);
             }
         });
         uploadPhotos.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // go to main screen with newly created outing
-                Intent i = new Intent(this, UploadPhotos.class);
-                startActivity(i);
+                //Intent i = new Intent(this, UploadPhotos.class);
+                //startActivity(i);
             }
         });
-    }
-
-    private File createImageFile() throws IOException {
-        // generate file name
-        String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
-        MyApplication.mJpg = timeStamp + ".jpg";
-        //Log.i("jpg path", MyApplication.mImagePath + MyApplication.mJpg);
-        return new File(MyApplication.mImagePath + MyApplication.mJpg); // storage directory
     }
 
     /**
@@ -82,14 +75,35 @@ public class MainMenu extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Intent mI = new Intent(this.getApplication(), SavePhoto.class);
         mI.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        // add thumbnail extra
-        if (requestCode == MyApplication.REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mI.putExtra("thumb", imageBitmap);
-        }
+        // create thumbnail and pass to intent
+        Bitmap imageBitmap = getThumbnailBitmap(MyApplication.mPhotoPath, 300);
+        mI.putExtra("thumb", imageBitmap);
         // image saved successfully; return to previous screen
         startActivity(mI);
+    }
+
+    // creates image file on disk
+    private File createImageFile() throws IOException {
+        // generate file name
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+        MyApplication.mJpg = timeStamp + ".jpg";
+        MyApplication.mPhotoPath = MyApplication.mImagePath + MyApplication.mJpg;
+        return new File(MyApplication.mPhotoPath); // storage directory
+    }
+
+    // creates a thumbnail from an image path
+    private Bitmap getThumbnailBitmap(String path, int thumbnailSize) {
+        BitmapFactory.Options bounds = new BitmapFactory.Options();
+        bounds.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, bounds);
+        if ((bounds.outWidth == -1) || (bounds.outHeight == -1)) {
+            return null;
+        }
+        int originalSize = (bounds.outHeight > bounds.outWidth) ? bounds.outHeight
+                : bounds.outWidth;
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inSampleSize = originalSize / thumbnailSize;
+        return BitmapFactory.decodeFile(path, opts);
     }
 
     @Override
