@@ -15,6 +15,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
+            android:parentActivityName=".MainMenu"
             android:name=".MainMenu"
             android:label="@string/app_name" >
             <intent-filter>
@@ -24,8 +25,20 @@
             </intent-filter>
         </activity>
         <activity
+            android:parentActivityName=".MainMenu"
             android:name=".SavePhoto"
             android:label="@string/title_activity_save_photo" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainMenu" />
+        </activity>
+        <activity
+            android:parentActivityName=".MainMenu"
+            android:name=".ViewPhotos"
+            android:label="@string/title_activity_view_photos" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainMenu" />
         </activity>
     </application>
 
